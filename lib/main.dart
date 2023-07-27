@@ -1,5 +1,6 @@
-import 'package:finance_forecasting/widgets/dataGridTable.dart';
-import 'package:finance_forecasting/widgets/scrollViewBehavior.dart';
+import 'package:finance_forecasting/widgets/data_grid_table.dart';
+import 'package:finance_forecasting/widgets/month_by_month_breakdown.dart';
+import 'package:finance_forecasting/widgets/scroll_view_behavior.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -19,7 +20,8 @@ class MyApp extends StatelessWidget {
       //   colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       //   useMaterial3: true,
       // ),
-      home: DataTableWidget(),
+      debugShowCheckedModeBanner: false,
+      home: MonthByMonthBreakDown(),
     );
   }
 }
