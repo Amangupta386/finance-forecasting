@@ -1,8 +1,10 @@
 
-
-const List<String> columnTitles = ['', 'Total FY', 'Total YTD'];
-
 const textFieldValue = '\$ 0';
+const List<String> columnTitles = ['', 'Total FY', 'Total YTD'];
+const lastElement =  'Monthly Deviation';
+const List lastName = [lastElement];
+const List<String> lastColumnName = [lastElement, textFieldValue, textFieldValue];
+
 
 const List names = [
   'Forecasted Revenue',
@@ -10,10 +12,11 @@ const List names = [
   'Forecasted Collection',
   'Actual Collection',
   'Monthly Cost',
-  'Monthly Deviation'
 ];
+
+
 int length = names.length;
-const lastElement =  'Monthly Deviation';
+
 const List monthsColumnsNames = [
   'Apr',
   'May',
@@ -30,8 +33,8 @@ const List monthsColumnsNames = [
 ];
 
 List<List<bool>> totalList  =[
-List.filled(length, true),   // totalFY
-List.filled(length, true),   // totalYTD
+  List.filled(length, true),   // totalFY
+  List.filled(length, true),   // totalYTD
 ];
 
 List<List<bool>> eachBlock = [
