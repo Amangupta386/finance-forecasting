@@ -14,6 +14,7 @@ class _MonthByMonthBreakDownState extends State<MonthByMonthBreakDown> {
   bool isLeftButtonEnabled = false;
   bool isRightButtonEnabled = true;
 
+  @override
   void initState() {
     super.initState();
     scrollController.addListener(_checkScrollPosition);
@@ -94,7 +95,7 @@ class _MonthByMonthBreakDownState extends State<MonthByMonthBreakDown> {
             thickness: 1,
           ),
           SizedBox(
-            height: MediaQuery.of(context).size.height / 2,
+            height: MediaQuery.of(context).size.height / 1.1,
             width: MediaQuery.of(context).size.width / 1,
             child: DataTableWidget(
               scrollController: scrollController,
