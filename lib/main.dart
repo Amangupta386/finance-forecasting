@@ -1,6 +1,6 @@
-import 'package:finance_forecasting/parentWidget/data_grid_table.dart';
-import 'package:finance_forecasting/widgets/month_by_month_breakdown.dart';
-import 'package:finance_forecasting/widgets/scroll_view_behavior.dart';
+import 'package:finance_forecasting/task_1/widgets/month_by_month_breakdown.dart';
+import 'package:finance_forecasting/task_1/widgets/scroll_view_behavior.dart';
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       //   useMaterial3: true,
       // ),
       debugShowCheckedModeBanner: false,
-      home: Scaffold(body: MonthByMonthBreakDown()),
+      home: const Scaffold(body: MonthByMonthBreakDown()),
     );
   }
 }
