@@ -1,0 +1,183 @@
+import 'package:ddofinance/providers/dashboard/dashboard_provider.dart';
+import 'package:ddofinance/providers/projects/projects_provider.dart';
+import 'package:ddofinance/theme/styles.dart';
+import 'package:ddofinance/utils/common_methods.dart';
+import 'package:ddofinance/utils/constants/labels.dart';
+import 'package:ddofinance/utils/device_screens/device_info.dart';
+import 'package:ddofinance/utils/master_data.dart';
+import 'package:ddofinance/utils/validators.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+class CustomTextFormField extends StatefulWidget {
+  final int rowIndex;
+  final int cellIndex;
+  final String textFormFieldName;
+  final int rowLength;
+  final int colLength;
+
+  const CustomTextFormField(
+      {super.key,
+      required this.rowIndex,
+      required this.cellIndex,
+      required this.textFormFieldName,
+      required this.rowLength,
+      required this.colLength});
+
+  @override
+  State<CustomTextFormField> createState() => _CustomTextFormFieldState();
+}
+
+class _CustomTextFormFieldState extends State<CustomTextFormField> {
+  late FocusNode textFocusNode;
+  @override
+  void initState() {
+    // TODO: implement initState
+    var provider = Provider.of<DashboardProvider>(context, listen: false);
+    if (widget.textFormFieldName == Labels.monthBreakdownTextField) {
+      provider.controller1 = List.generate(
+        widget.rowLength,
+        (_) => List.generate(
+            widget.colLength, (_) => TextEditingController(text: '0')),
+      );
+    }
+
+    if (widget.textFormFieldName == Labels.expenseMonthTextField) {
+      provider.controller2 = List.generate(
+        widget.rowLength,
+        (_) => List.generate(
+            widget.colLength, (_) => TextEditingController(text: '0')),
+      );
+    }
+
+    if (widget.textFormFieldName == Labels.resourceMonthTextField) {
+      provider.controller3 = List.generate(
+        widget.rowLength,
+        (_) => List.generate(
+            widget.colLength, (_) => TextEditingController(text: '0')),
+      );
+    }
+    if (widget.textFormFieldName == Labels.addRowExpenseMonthTextField) {
+      provider.controller4 = List.generate(
+        widget.rowLength,
+        (_) => List.generate(
+            widget.colLength, (_) => TextEditingController(text: '0')),
+      );
+    }
+    textFocusNode = FocusNode();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var provider = Provider.of<DashboardProvider>(context, listen: false);
+
+    final bool isAndroid = DeviceOS.isAndroid;
+    final bool isMonitor = DeviceScreen.isMonitor(context);
+    final bool isLaptop = DeviceScreen.isLargeScreen(context);
+    final bool isTablet = DeviceScreen.isTablet(context);
+    final theme = Theme.of(context);
+    final ColorScheme colorTheme = theme.colorScheme;
+    final OutlineInputBorder customOutlineInputBorder = OutlineInputBorder(
+      borderSide: BorderSide(
+          color: (provider.isValidMonthBreakdown[widget.rowIndex]
+                  [widget.cellIndex])
+              ? colorTheme.onTertiaryContainer
+              : colorTheme.onPrimary,
+          width: 1.0),
+      borderRadius:
+          BorderRadius.circular(4.0), // You can adjust the border radius
+    );
+
+    final textFieldStyle = (isAndroid)
+        ? theme.textTheme.titleMedium!.copyWith(
+            fontSize: FontSizes.s14,
+          )
+        : (isMonitor)
+            ? theme.textTheme.titleMedium!.copyWith(
+                fontSize: FontSizes.s20,
+              )
+            : (isLaptop)
+                ? theme.textTheme.titleMedium!.copyWith(
+                    fontSize: FontSizes.s16,
+                  )
+                : theme.textTheme.titleMedium!.copyWith(
+                    fontSize: FontSizes.s16,
+                  );
+
+    return Focus(
+        focusNode: textFocusNode,
+        onKey: CommonMethods.changeFormFieldFocus,
+        child: Padding(
+          padding: (provider.isSelect[widget.rowIndex])
+              ? const EdgeInsets.all(0)
+              : EdgeInsets.all(Insets.s3),
+          child: TextFormField(
+            controller: (widget.textFormFieldName ==
+                    Labels.monthBreakdownTextField)
+                ? provider.controller1[widget.rowIndex][widget.cellIndex]
+                : (widget.textFormFieldName == Labels.expenseMonthTextField)
+                    ? provider.controller2[widget.rowIndex][widget.cellIndex]
+                    : (widget.textFormFieldName ==
+                            Labels.resourceMonthTextField)
+                        ? provider.controller3[widget.rowIndex]
+                            [widget.cellIndex]
+                        : (widget.textFormFieldName ==
+                                Labels.addRowExpenseMonthTextField)
+                            ? provider.controller4[widget.rowIndex]
+                                [widget.cellIndex]
+                            : null,
+            validator: TextFieldValidation.validateInput,
+            onChanged: (value) {
+              provider.showValidation(value, widget.rowIndex, widget.cellIndex,
+                  widget.textFormFieldName);
+
+              if (widget.textFormFieldName == Labels.monthBreakdownTextField) {
+                provider.dashboardAndProjectMonthTextValue[widget.rowIndex]
+                    [widget.cellIndex] = value;
+              }
+              else if (widget.textFormFieldName ==
+                  Labels.expenseMonthTextField) {
+                provider.dashboardAndProjectExpenseMonthValue[widget.rowIndex]
+                    [widget.cellIndex] = value;
+              }
+              else if (widget.textFormFieldName ==
+                  Labels.resourceMonthTextField) {
+                MasterData.dashboardAndProjectResourceDataCellValue[
+                    widget.rowIndex][widget.cellIndex] = value;
+              }
+              // else if (widget.textFormFieldName ==
+              //     Labels.addRowExpenseMonthTextField) {
+              //   provider.dashboardAndProjectAddRowExpenseMonthValue[
+              //       widget.rowIndex][widget.cellIndex] = value;
+              // }
+
+              provider.calculateSum(value, widget.rowLength, widget.colLength,
+                  widget.textFormFieldName);
+            },
+            maxLength: 11,
+            textInputAction: TextInputAction.next,
+            autofocus: true,
+            readOnly:
+                (Provider.of<ProjectsProvider>(context).toMove) ? false : true,
+            decoration: (provider.isSelect[widget.rowIndex])
+                ? InputDecoration(
+                    enabledBorder: customOutlineInputBorder,
+                    counterText: '',
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                      color: (provider.isValidMonthBreakdown[widget.rowIndex]
+                              [widget.cellIndex])
+                          ? colorTheme.onTertiaryContainer
+                          : colorTheme.onBackground,
+                    )),
+                  )
+                : const InputDecoration(
+                    counterText: '',
+                    border: InputBorder.none,
+                  ),
+            style: textFieldStyle,
+          ),
+        ));
+  }
+}
